@@ -1,4 +1,5 @@
-appengine-skeleton
+Google App Engine - Google Data Store testing
 =============================
 
-This is a generated application from the appengine-skeleton archetype.
+* build the project using mvn clean install
+* run the project using mvn appengine:devserver
