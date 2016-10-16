@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.maj.sm.utility.PriceComparator;
+import org.maj.sm.utility.ChangeLogEntryComparator;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -14,7 +14,7 @@ public class Campaign {
 
 	@Id public String code;
 	public String description;
-	SortedSet<PriceChangeLog> priceChangeLog = new TreeSet<>(new PriceComparator()); 
+	SortedSet<ChangeLogEntry<Double>> priceChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
 	
 	public Campaign() {
 		super();
@@ -26,13 +26,14 @@ public class Campaign {
 		this.description = description;
 	}
 	
-	public void addPrice(Date date, double price){
-		this.priceChangeLog.add(new PriceChangeLog(date,price));
+	public void addPrice(Date date, Double price){
+		this.priceChangeLog.add(new ChangeLogEntry(date,price)
+		);
 	}
 
 	@Override
 	public String toString() {
-		return "Campaign [code=" + code + ", description=" + description + ", price=" + this.priceChangeLog.last().getNewPrice() + "]";
+		return "Campaign [code=" + code + ", description=" + description + ", price=" + this.priceChangeLog.last().getValue() + "]";
 	}
 	
 }
