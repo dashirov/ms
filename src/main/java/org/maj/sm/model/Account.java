@@ -3,6 +3,7 @@ package org.maj.sm.model;
 /**
  * Created by dashirov on 10/16/16.
  */
+import com.googlecode.objectify.annotation.Container;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import org.maj.sm.model.enums.AccountOwnershipStatus;
@@ -19,7 +20,6 @@ public class Account {
     public AccountType type;  // TODO: Make sure enum gets into ndb as a string value
     public String name;
     public String description;
-    SortedSet<ChangeLogEntry<AccountStatus>> statusChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
 
     /**
      * A sorted map keyed by a subaccount (that was ever subjugated to this account )
@@ -28,13 +28,30 @@ public class Account {
      *
      *       why sorted? I want api to return data in the same order from different nodes, jvm implementations
      */
-    SortedMap accountOwnershipLog
-            = Collections.synchronizedSortedMap(
-            new TreeMap<BusinessUnit,SortedSet<ChangeLogEntry<AccountOwnershipStatus>>>(new AccountComparator())
-    );
 
-    public void subjugateAccount(BusinessUnit businessUnit){
+    @Container
+    SortedMap<Long,ChangeLog<AccountOwnershipStatus>> accountOwnershipLog=new TreeMap<>();
+
+
+    public void subjugateAccount(BusinessUnit businessUnit, Date effectiveDate, Date terminationDate){
         // unlink account from its parent, link to this as a parent, update this.accountOwnershipLog
+        /**
+         * (1) - pull records from a map using child's Id, or create a new log if key wasn't found
+         */
+        ChangeLog<AccountOwnershipStatus> childLog = accountOwnershipLog.getOrDefault(businessUnit.id, new ChangeLog<AccountOwnershipStatus>());
+        /**
+         * Effective as of effectiveDate assert ownership. If termination date supplied make sure no other records exist between effective and termination date.
+         * Apply the change to parent property of the BusinessUnit being subjugated as well.
+         * TODO: transactional?
+         */
+        childLog.addLogEntry(new ChangeLogEntry(effectiveDate, AccountOwnershipStatus.ACQUIRED));
+        if (terminationDate==null){
+            childLog.deleteLogsAfter(effectiveDate);
+        } else {
+            childLog.deleteLogsBetween(effectiveDate,terminationDate);
+            childLog.addLogEntry(new ChangeLogEntry(terminationDate, AccountOwnershipStatus.RELEASED));
+        }
+
     }
     public Long getId() {
         return id;

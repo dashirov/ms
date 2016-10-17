@@ -23,11 +23,9 @@ public class Campaign {
 
     @Container
     private ChangeLog<Double> priceChangeLog = new ChangeLog<>();
+
     @Container
     private ChangeLog<CampaignStatus> statusChangeLog=new ChangeLog<>();
-
-    // SortedSet<ChangeLogEntry<Double>> priceChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
-    // SortedSet<ChangeLogEntry<CampaignStatus>> statusChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
 	
 	public Campaign() {
 		super();

@@ -25,14 +25,37 @@ public class ChangeLog<T> {
     public T getValue(final Date date, T defaultValue){
         for (ChangeLogEntry<T> changeLogEntry: this.changeLog
                 ) {
-            if (changeLogEntry.getEffectiveDate().before(date) || changeLogEntry.getEffectiveDate().equals(date)){
-                return changeLogEntry.getValue();
+            if (changeLogEntry.effectiveDate.before(date) || changeLogEntry.effectiveDate.equals(date)){
+                return changeLogEntry.value;
             }
 
         }
         return defaultValue;
     }
 
+    public void deleteLogsAfter(final Date effectiveDate){
+        changeLog.removeIf(new Predicate<ChangeLogEntry<T>>() {
+            @Override
+            public boolean test(ChangeLogEntry<T> tChangeLogEntry) {
+                if (tChangeLogEntry.effectiveDate.after(effectiveDate))
+                    return true;
+                else
+                    return false;
+
+            }
+        });
+    }
+    public void deleteLogsBetween(final Date effectiveDate, final Date terminationDate){
+        changeLog.removeIf(new Predicate<ChangeLogEntry<T>>() {
+            @Override
+            public boolean test(ChangeLogEntry<T> tChangeLogEntry) {
+                if (tChangeLogEntry.effectiveDate.after(effectiveDate) && tChangeLogEntry.effectiveDate.before(terminationDate))
+                    return true;
+                else
+                    return false;
+            }
+        });
+    }
     public void addLogEntry(final ChangeLogEntry changeLogEntry){
         /**
          * No duplicate entries are allowed - keyed on effective date. New additions will replace conflicting items.
@@ -40,7 +63,7 @@ public class ChangeLog<T> {
         changeLog.removeIf(new Predicate<ChangeLogEntry<T>>() {
             @Override
             public boolean test(ChangeLogEntry<T> tChangeLogEntry) {
-                if (tChangeLogEntry.getEffectiveDate().equals(changeLogEntry.getEffectiveDate()))
+                if (tChangeLogEntry.effectiveDate.equals(changeLogEntry.effectiveDate))
                    return true;
                 else
                     return false;
