@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+
+import com.googlecode.objectify.annotation.Container;
 import org.maj.sm.model.enums.CampaignStatus;
 import org.maj.sm.utility.ChangeLogEntryComparator;
 
@@ -19,8 +21,13 @@ public class Campaign {
     public Long marketplace;  // where do we buy the traffc from
     public String product; // what product are we advertising
 
-    SortedSet<ChangeLogEntry<Double>> priceChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
-    SortedSet<ChangeLogEntry<CampaignStatus>> statusChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
+    @Container
+    private ChangeLog<Double> priceChangeLog = new ChangeLog<>();
+    @Container
+    private ChangeLog<CampaignStatus> statusChangeLog=new ChangeLog<>();
+
+    // SortedSet<ChangeLogEntry<Double>> priceChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
+    // SortedSet<ChangeLogEntry<CampaignStatus>> statusChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
 	
 	public Campaign() {
 		super();
@@ -31,14 +38,12 @@ public class Campaign {
 		this.code = code;
 		this.description = description;
 	}
-	
 	public void setPrice(Date effectiveDate, Double campaignPrice){
-		this.priceChangeLog.add(new ChangeLogEntry(effectiveDate,campaignPrice)
-		);
+		this.priceChangeLog.addLogEntry(new ChangeLogEntry<>(effectiveDate,campaignPrice));
 	}
 
 	public void setStatus(Date effectiveDate, CampaignStatus campaignStatus){
-        this.statusChangeLog.add(new ChangeLogEntry<CampaignStatus>(effectiveDate,campaignStatus));
+        this.statusChangeLog.addLogEntry(new ChangeLogEntry<>(effectiveDate,campaignStatus));
     }
 
     public CampaignStatus getStatus(){
@@ -46,14 +51,7 @@ public class Campaign {
     }
 
     public CampaignStatus getStatus(Date date) {
-        for (ChangeLogEntry<CampaignStatus> changeLogEntry: statusChangeLog
-             ) {
-            if (changeLogEntry.getEffectiveDate().before(date) || changeLogEntry.getEffectiveDate().equals(date)){
-                return changeLogEntry.getValue();
-            }
-
-        }
-        return CampaignStatus.DELETED;
+        return this.statusChangeLog.getValue(date,CampaignStatus.NOT_FOUND);
     }
 
     public Double getPrice(){
@@ -68,48 +66,11 @@ public class Campaign {
             return 0.0;
         }
         /**
-         * Now that we know it was active, find the price
+         * Now that we know it was active, find the price or default to $0.00
          */
-        for (ChangeLogEntry<Double> changeLogEntry: priceChangeLog
-             ) {
-            if (changeLogEntry.getEffectiveDate().before(date) || changeLogEntry.getEffectiveDate().equals(date)){
-                return changeLogEntry.getValue();
-            }
-        }
-        return 0.0;
+        return priceChangeLog.getValue(date,0.00);
     }
 
-    public String statusChangeLogAsString(){
-        StringBuilder sb = new StringBuilder();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        sb.append("PriceChangeLog[");
-        for (ChangeLogEntry<CampaignStatus> e: statusChangeLog
-                ) {
-            sb.append("{");
-            sb.append(df.format(e.getEffectiveDate()));
-            sb.append(": ");
-            sb.append(e.getValue().toString());
-            sb.append("}");
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
-    public String priceChangeLogAsString(){
-        StringBuilder sb = new StringBuilder();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        sb.append("PriceChangeLog[");
-        for (ChangeLogEntry<Double> e: priceChangeLog
-             ) {
-            sb.append(" {");
-            sb.append(df.format(e.getEffectiveDate()));
-            sb.append(": ");
-            sb.append(e.getValue().toString());
-            sb.append("} ");
-        }
-        sb.append("]");
-        return sb.toString();
-    }
     
     @Override
     public String toString() {
@@ -120,10 +81,10 @@ public class Campaign {
                 ", product='" + product + '\'' +
 
                 ", price=" + this.getPrice(new Date()).toString() +
-                ", priceChangeLog=" + this.priceChangeLogAsString()+
+                ", priceChangeLog=" + this.priceChangeLog.toString()+
 
                 ", status=" + this.getStatus(new Date()).toString() +
-                ", statusChangeLog=" + this.statusChangeLogAsString() +
+                ", statusChangeLog=" + this.statusChangeLog.toString() +
                 '}';
     }
 }
