@@ -61,47 +61,61 @@ public class AccountTest {
 
         ofy().save().entity(parent).now();
 
-		Account europe = new Account();
+        Account world = ofy().load().entity(parent).now();
+
+        Account europe = new Account();
 		europe.setName("Europe");
         europe.addParentAccount(dateFormat.parse("0001-01-01"), parent.getId());
-
         ofy().save().entity(europe).now();
+        world.addChildAccount(dateFormat.parse("0001-01-01"), europe.getId());
+
+
 
 		Account france = new Account();
 		france.setName("France");
         france.addParentAccount(dateFormat.parse("0987-01-01"), europe.getId());
-
         ofy().save().entity(france).now();
+        europe.addChildAccount(dateFormat.parse("0987-01-01"),france.getId());
+
 
         // Claimed not before 1492
 		Account northAmerica = new Account();
 		northAmerica.setName("North America");
-        northAmerica.addParentAccount(dateFormat.parse("1492-01-01"), parent.getId());
-
+        northAmerica.addParentAccount(dateFormat.parse("1492-01-01"), world.getId());
         ofy().save().entity(northAmerica).now();
+        world.addChildAccount(dateFormat.parse("1492-01-01"),northAmerica.getId());
+
 
         // Established July 4, 1776
 		Account unitedStates = new Account();
 		unitedStates.setName("United States");
         unitedStates.addParentAccount(dateFormat.parse("1776-07-04"), northAmerica.getId());
-
         ofy().save().entity(unitedStates).now();
+        northAmerica.addChildAccount(dateFormat.parse("1776-07-04"), unitedStates.getId());
+
+
 
         // Established July 26, 1788
 		Account newYorkState = new Account();
 		newYorkState.setName("New York State");
         newYorkState.addParentAccount(dateFormat.parse("1788-07-26"), unitedStates.getId());
-
         ofy().save().entity(newYorkState).now();
+        unitedStates.addChildAccount(dateFormat.parse("1788-07-26"), newYorkState.getId());
+
 
 
 		// Established  as a fort in  April 17, 1524 and belonged to France
 		Account newYorkCity = new Account();
 		newYorkCity.setName("City of New York");
 		newYorkCity.addParentAccount(dateFormat.parse("1524-04-17"), france.getId());
+        france.addChildAccount(dateFormat.parse("1524-04-17"), newYorkCity.getId());
         newYorkCity.addParentAccount(dateFormat.parse("1788-07-26"), newYorkState.getId());
-
         ofy().save().entity(newYorkCity).now();
+        newYorkState.addChildAccount(dateFormat.parse("1788-07-26"), newYorkCity.getId());
+
+
+
+        ofy().save().entities(world,europe,northAmerica,france,northAmerica,newYorkCity,newYorkState).now();
 
 
     	Account child = new Account();
