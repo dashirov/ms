@@ -57,9 +57,53 @@ public class AccountTest {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	Date oldDate = dateFormat.parse("2016-10-01");
     	Account parent = new Account();
-    	parent.setName("Parent");
-    	ofy().save().entity(parent).now();
-    	
+    	parent.setName("World");
+
+        ofy().save().entity(parent).now();
+
+		Account europe = new Account();
+		europe.setName("Europe");
+        europe.addParentAccount(dateFormat.parse("0001-01-01"), parent.getId());
+
+        ofy().save().entity(europe).now();
+
+		Account france = new Account();
+		france.setName("France");
+        france.addParentAccount(dateFormat.parse("0987-01-01"), europe.getId());
+
+        ofy().save().entity(france).now();
+
+        // Claimed not before 1492
+		Account northAmerica = new Account();
+		northAmerica.setName("North America");
+        northAmerica.addParentAccount(dateFormat.parse("1492-01-01"), parent.getId());
+
+        ofy().save().entity(northAmerica).now();
+
+        // Established July 4, 1776
+		Account unitedStates = new Account();
+		unitedStates.setName("United States");
+        unitedStates.addParentAccount(dateFormat.parse("1776-07-04"), northAmerica.getId());
+
+        ofy().save().entity(unitedStates).now();
+
+        // Established July 26, 1788
+		Account newYorkState = new Account();
+		newYorkState.setName("New York State");
+        newYorkState.addParentAccount(dateFormat.parse("1788-07-26"), unitedStates.getId());
+
+        ofy().save().entity(newYorkState).now();
+
+
+		// Established  as a fort in  April 17, 1524 and belonged to France
+		Account newYorkCity = new Account();
+		newYorkCity.setName("City of New York");
+		newYorkCity.addParentAccount(dateFormat.parse("1524-04-17"), france.getId());
+        newYorkCity.addParentAccount(dateFormat.parse("1788-07-26"), newYorkState.getId());
+
+        ofy().save().entity(newYorkCity).now();
+
+
     	Account child = new Account();
     	child.setName("Child");
     	child.addParentAccount(oldDate, parent.getId());    	
