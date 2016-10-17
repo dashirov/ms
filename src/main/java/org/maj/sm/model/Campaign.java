@@ -14,7 +14,8 @@ public class Campaign {
 
 	@Id public String code;
 	public String description;
-	SortedSet<ChangeLogEntry<Double>> priceChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
+
+    SortedSet<ChangeLogEntry<Double>> priceChangeLog = new TreeSet<>(new ChangeLogEntryComparator());
 	
 	public Campaign() {
 		super();

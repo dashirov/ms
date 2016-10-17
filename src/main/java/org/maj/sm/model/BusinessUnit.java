@@ -22,6 +22,6 @@ public class BusinessUnit extends Account {
 
     public BusinessUnit() {
         super();
-        this.type=AccountType.BUSINESS_UNIT;
+        this.setType(AccountType.BUSINESS_UNIT);
     }
 }
