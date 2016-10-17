@@ -1,5 +1,7 @@
 package org.maj.sm;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -51,17 +53,19 @@ public class AccountTest {
     }
     
     @Test
-    public void testAccount(){
+    public void testAccount() throws ParseException{
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    	Date oldDate = dateFormat.parse("2016-10-01");
     	Account parent = new Account();
     	parent.setName("Parent");
     	ofy().save().entity(parent).now();
     	
     	Account child = new Account();
     	child.setName("Child");
-    	child.addParentAccount(new Date(), parent.getId());    	
+    	child.addParentAccount(oldDate, parent.getId());    	
     	ofy().save().entity(child).now();
     	
-    	parent.addChildAccount(new Date(), child.getId());
+    	parent.addChildAccount(oldDate, child.getId());
     	ofy().save().entity(parent).now();
     	
     	Assert.assertNotNull(parent);
@@ -69,11 +73,27 @@ public class AccountTest {
     	
     	
     	//retrieve the parent and test
-    	
+    	//parent --> child 
     	Account parentRetrieved = ofy().load().type(Account.class).filterKey(Key.create(Account.class, parent.getId())).first().now();
     	
     	Assert.assertEquals(parent.getChildAccount(), parentRetrieved.getChildAccount());
     	
+    	//Now add a middle child
+    	//parent --> middle --> child
+    	Date d = dateFormat.parse("2016-10-10");
+    	Account middle = new Account();
+    	middle.setName("Middle");
+    	middle.addParentAccount(d, parent.getId());
+    	middle.addChildAccount(d,child.getId());
+    	ofy().save().entity(middle).now();
+    	
+    	parent.addChildAccount(d, middle.getId());
+    	ofy().save().entity(parent).now();
+    	
+    	child.addParentAccount(d, middle.getId());
+    	
+    	parentRetrieved = ofy().load().type(Account.class).filterKey(Key.create(Account.class, parent.getId())).first().now();
+    	Assert.assertEquals(middle.getId(), Long.valueOf(parentRetrieved.getChildAccount()));
     }
     
     
