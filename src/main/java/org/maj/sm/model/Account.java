@@ -3,18 +3,14 @@ package org.maj.sm.model;
 /**
  * Created by dashirov on 10/16/16.
  */
-import com.googlecode.objectify.Key;
+
 import com.googlecode.objectify.annotation.Container;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import org.maj.sm.model.enums.AccountOwnershipStatus;
-import org.maj.sm.model.enums.AccountStatus;
 import org.maj.sm.model.enums.AccountType;
-import org.maj.sm.utility.AccountComparator;
-import org.maj.sm.utility.ChangeLogEntryComparator;
 
-import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 public class Account {

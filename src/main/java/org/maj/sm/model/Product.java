@@ -3,14 +3,9 @@ package org.maj.sm.model;
 import com.googlecode.objectify.annotation.Container;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Stringify;
-import org.maj.sm.model.enums.CampaignStatus;
 import org.maj.sm.model.enums.ProductStatus;
-import org.maj.sm.utility.ChangeLogEntryComparator;
 
 import java.util.Date;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 
 @Entity

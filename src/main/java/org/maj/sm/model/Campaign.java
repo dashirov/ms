@@ -1,17 +1,11 @@
 package org.maj.sm.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-
 import com.googlecode.objectify.annotation.Container;
-import org.maj.sm.model.enums.CampaignStatus;
-import org.maj.sm.utility.ChangeLogEntryComparator;
-
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import org.maj.sm.model.enums.CampaignStatus;
+
+import java.util.Date;
 
 @Entity
 public class Campaign {
