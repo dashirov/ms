@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.maj.sm.model.Campaign;
 
-import com.google.appengine.api.datastore.QueryResultIterable;
-
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class HelloAppEngine extends HttpServlet {
@@ -48,7 +46,7 @@ public class HelloAppEngine extends HttpServlet {
    
     
     Campaign campaign = new Campaign(UUID.randomUUID().toString(),"Test Desc");
-    campaign.addPrice(new Date(), 0.25D);
+    campaign.setPrice(new Date(), 0.25D);
     ofy().save().entity(campaign).now();
 
   }
