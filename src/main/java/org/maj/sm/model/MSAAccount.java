@@ -16,5 +16,4 @@ public class MSAAccount extends Account {
         super();
         this.setType(AccountType.MSA);
     }
-
 }

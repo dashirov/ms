@@ -16,12 +16,12 @@ import java.util.TreeSet;
 @Entity
 public class Product {
 
-	@Id public String code;
-	public String name;
-	public String description;
+	@Id private String code;
+	private String name;
+	private String description;
 
     @Container
-	ChangeLog<ProductStatus> statusChangeLog = new ChangeLog<ProductStatus>();
+	private ChangeLog<ProductStatus> statusChangeLog = new ChangeLog<ProductStatus>();
 
 	public Product() {
 		super();
@@ -40,8 +40,40 @@ public class Product {
     }
 
     public ProductStatus getStatus(final Date date){
-        return this.statusChangeLog.getValue(date,ProductStatus.DELETED);
+        return this.statusChangeLog.getValue(date,ProductStatus.NONEXISTING);
     }
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code.toUpperCase();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public ChangeLog<ProductStatus> getStatusChangeLog() {
+		return statusChangeLog;
+	}
+
+	public void setStatusChangeLog(ChangeLog<ProductStatus> statusChangeLog) {
+		this.statusChangeLog = statusChangeLog;
+	}
 
 	@Override
 	public String toString() {

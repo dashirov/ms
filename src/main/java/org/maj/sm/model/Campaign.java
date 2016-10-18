@@ -16,10 +16,10 @@ import com.googlecode.objectify.annotation.Id;
 @Entity
 public class Campaign {
 
-	@Id public String code;
-	public String description;
-    public Long marketplace;  // where do we buy the traffc from
-    public String product; // what product are we advertising
+	@Id private String code;
+	private String description;
+    private Long marketplace;  // where do we buy the traffc from
+    private String product; // what product are we advertising
 
     @Container
     private ChangeLog<Double> priceChangeLog = new ChangeLog<>();
@@ -69,7 +69,54 @@ public class Campaign {
         return priceChangeLog.getValue(date,0.00);
     }
 
-    
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getMarketplace() {
+        return marketplace;
+    }
+
+    public void setMarketplace(Long marketplace) {
+        this.marketplace = marketplace;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public ChangeLog<Double> getPriceChangeLog() {
+        return priceChangeLog;
+    }
+
+    public void setPriceChangeLog(ChangeLog<Double> priceChangeLog) {
+        this.priceChangeLog = priceChangeLog;
+    }
+
+    public ChangeLog<CampaignStatus> getStatusChangeLog() {
+        return statusChangeLog;
+    }
+
+    public void setStatusChangeLog(ChangeLog<CampaignStatus> statusChangeLog) {
+        this.statusChangeLog = statusChangeLog;
+    }
+
     @Override
     public String toString() {
         return "Campaign{" +

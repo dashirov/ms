@@ -72,29 +72,28 @@ public class CampaignTest {
             e.printStackTrace();
         }
         Marketplace google = new Marketplace();
-        google.name="Google AdWords Market";
-        google.id=ofy().save().entity(google).now().getId();
+        google.setName("Google AdWords Market");
 
-        Assert.assertEquals("Google AdWords Market", google.name);
-        Assert.assertNotNull(google.id);
-        Assert.assertNotEquals(google.id,Long.valueOf(0x0) );
+        Key<Marketplace> marketplaceKey=ofy().save().entity(google).now();
+        Long id = marketplaceKey.getId();
+        System.out.println(google.getId());
+
+        Assert.assertEquals("Google AdWords Market", google.getName());
+        Assert.assertNotNull(google.getId());
+        Assert.assertNotEquals(google.getId(),Long.valueOf(0x0) );
 
         System.out.println(google.toString());
 
         Marketplace appnexus= new Marketplace();
-        appnexus.name="AppNexus DSP Programatic Market";
-        appnexus.id=ofy().save().entity(appnexus).now().getId();
+        appnexus.setName("AppNexus DSP Programatic Market");
+        marketplaceKey=ofy().save().entity(appnexus).now();
+        id=marketplaceKey.getId();
 
 
-        Marketplace appnexus2=ofy().load().entity(appnexus).safe();
-        Assert.assertEquals(appnexus,appnexus2);
-
-        Marketplace appnexus3=ofy().load().key(Key.create(Marketplace.class,appnexus.id)).now();
-        Assert.assertEquals(appnexus2,appnexus2);
         Product cannedCatfood = new Product();
-        cannedCatfood.name="Canned Catfood 16oz. metal can";
-        cannedCatfood.code="CCF16";
-        cannedCatfood.description="Some mandane copy describing boring canned cat food";
+        cannedCatfood.setName("Canned Catfood 16oz. metal can");
+        cannedCatfood.setCode("CCF16");
+        cannedCatfood.setDescription("Some mandane copy describing boring canned cat food");
         cannedCatfood.setStatus(dt3,ProductStatus.NEW);
         cannedCatfood.setStatus(dt2, ProductStatus.ACTIVE);
         String productId = ofy().save().entity(cannedCatfood).now().getString();
@@ -103,16 +102,16 @@ public class CampaignTest {
 
         System.out.println("Canned catfood: " + productId);
 
-        System.out.println("Canned catfood2: " + cannedCatfood2.description);
+        System.out.println("Canned catfood2: " + cannedCatfood2.getDescription());
 
         Assert.assertEquals(cannedCatfood,cannedCatfood2);
 
 
 
         Campaign campaign = new Campaign("XX","Test Code");
-        campaign.marketplace = google.id;
+        campaign.setMarketplace(google.getId());
 
-        campaign.product=cannedCatfood.code;
+        campaign.setProduct(cannedCatfood.getCode());
 
 
         campaign.setPrice(dt1, 15.0009);
@@ -138,9 +137,9 @@ public class CampaignTest {
         ofy().save().entity(campaign).now();
 
         // 2) retrieve campaign from data store
-        Campaign campaignRetrieved = ofy().load().type(Campaign.class).filterKey(Key.create(Campaign.class, campaign.code)).first().now();
+        Campaign campaignRetrieved = ofy().load().type(Campaign.class).filterKey(Key.create(Campaign.class, campaign.getCode())).first().now();
         Assert.assertNotNull(campaignRetrieved);
-        Assert.assertEquals(campaign.code, campaignRetrieved.code);
-        Assert.assertEquals(campaign.description, campaignRetrieved.description);
+        Assert.assertEquals(campaign.getCode(), campaignRetrieved.getCode());
+        Assert.assertEquals(campaign.getDescription(), campaignRetrieved.getDescription());
     }
 }
