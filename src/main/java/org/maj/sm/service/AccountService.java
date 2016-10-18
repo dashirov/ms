@@ -8,10 +8,21 @@ import org.maj.sm.model.MSAAccount;
 
 import com.googlecode.objectify.Key;
 
+/**
+ * This is a higher level service layer
+ * 
+ * @author shamik.majumdar
+ *
+ */
+
 public class AccountService {
 	
 	private AccountServiceDAO accountServiceDAO;
 	
+	public void setAccountServiceDAO(AccountServiceDAO accountServiceDAO) {
+		this.accountServiceDAO = accountServiceDAO;
+	}
+
 	public MSAAccount createAccount(String name, String description) {
 		MSAAccount myWalledGarden = new MSAAccount();
 		 myWalledGarden.setName(name);

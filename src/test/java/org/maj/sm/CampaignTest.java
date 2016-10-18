@@ -22,7 +22,6 @@ import org.maj.sm.model.Marketplace;
 import org.maj.sm.model.Product;
 import org.maj.sm.model.enums.CampaignStatus;
 import org.maj.sm.model.enums.ProductStatus;
-import sun.jvm.hotspot.oops.Mark;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
