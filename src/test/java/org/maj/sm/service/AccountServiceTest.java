@@ -1,4 +1,4 @@
-package org.maj.sm;
+package org.maj.sm.service;
 
 
 import org.junit.After;
@@ -14,6 +14,7 @@ import org.maj.sm.model.Campaign;
 import org.maj.sm.model.MSAAccount;
 import org.maj.sm.model.Marketplace;
 import org.maj.sm.model.Product;
+import org.maj.sm.model.enums.AccountType;
 import org.maj.sm.service.AccountService;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -60,19 +61,31 @@ public class AccountServiceTest {
     
     @Test
     public void testService(){
-    	MSAAccount msaAccount = this.accountService.createAccount("Root", "Root Account");
-    	BusinessUnit usaUnit = this.accountService.createBusinessUnit("usUnit", "USA buiness unit", msaAccount);
-    	BusinessUnit europeUnit = this.accountService.createBusinessUnit("europeUnit", "Europe buiness unit", msaAccount);
-    	
+    	MSAAccount msaAccount = this.accountService.createMSAAccount("ACME Company", "ACME Company Master Service Agreemeent Account");
+        Assert.assertNotNull("Expecting the backend to populate object identifier",msaAccount.getId());
+        Assert.assertEquals("Expecting the POJO to set correct account type", AccountType.MSA, msaAccount.getType());
+        Assert.assertEquals("Expecting account to have no subaccounts as none were created yet",0,msaAccount.getChildAccounts().size());
+
+    	BusinessUnit usaUnit = this.accountService.createBusinessUnit("US Operations", "USA buiness unit", msaAccount);
+        Assert.assertEquals("Expecting msa account to have one subaccount",1,msaAccount.getChildAccounts().size());
+        Assert.assertEquals("Expecting first global business unit to point to msa as a parent",msaAccount.getId(),usaUnit.getParentAccount());
+
+    	BusinessUnit europeUnit = this.accountService.createBusinessUnit("EU Operations", "Europe buiness unit", msaAccount);
+        Assert.assertEquals("MSA Account should list two distinct subaccounts",2,msaAccount.getChildAccounts().size());
+
     	BusinessUnit flUnit = this.accountService.createBusinessUnit("flUnit", "Florida buiness unit", usaUnit);
-    	
+        BusinessUnit nyUnit = this.accountService.createBusinessUnit("nyUnit", "NY business unit",msaAccount);
+        Assert.assertEquals("MSA Account should have 3 subaccounts",3,msaAccount.getChildAccounts().size());
+        // Move an account
+    	nyUnit = this.accountService.moveBusinessUnit(nyUnit,usaUnit);
+        Assert.assertEquals("MSA Account should have 2 subaccounts",2,msaAccount.getChildAccounts().size());
+        Assert.assertEquals("US Account should have 2 subaccounts",2,usaUnit.getChildAccounts().size());
+        Assert.assertTrue(usaUnit.getChildAccounts().contains(flUnit.getId()));
+        Assert.assertTrue(usaUnit.getChildAccounts().contains(nyUnit.getId()));
     	//Test 1 - make sure it was saved
     	Assert.assertNotNull(msaAccount.getId());
-    	
-    	//Test 2 - make sure the whole chain is there
-    	
-    	Assert.assertEquals(2, msaAccount.getChildAccounts().size());
-    	Assert.assertEquals(1, usaUnit.getChildAccounts().size());
+
+
     	
     }
     

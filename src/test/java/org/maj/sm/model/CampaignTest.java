@@ -1,4 +1,4 @@
-package org.maj.sm;
+package org.maj.sm.model;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;

@@ -11,6 +11,11 @@ import org.maj.sm.model.enums.AccountType;
 public class MSAAccount extends Account {
     public MSAAccount() {
         super();
-        this.setType(AccountType.MSA);
+        super.setType(AccountType.MSA);
+    }
+    @Override
+    public void setType(AccountType ignored){
+        // Do not allow to chaange account type
+        super.setType(AccountType.MSA);
     }
 }

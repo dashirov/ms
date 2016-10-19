@@ -12,8 +12,14 @@ public class BusinessUnit extends Account {
     private Long parentAccount;
     public BusinessUnit() {
         super();
-        this.setType(AccountType.BUSINESS_UNIT);
+        super.setType(AccountType.BUSINESS_UNIT);
     }
+    @Override
+    public void setType(AccountType ignored) {
+        // do not allow to change account type
+        super.setType(AccountType.BUSINESS_UNIT);
+    }
+
     public Long getParentAccount() {
         return parentAccount;
     }

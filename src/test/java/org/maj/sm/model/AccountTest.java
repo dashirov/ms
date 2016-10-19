@@ -1,4 +1,4 @@
-package org.maj.sm;
+package org.maj.sm.model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
