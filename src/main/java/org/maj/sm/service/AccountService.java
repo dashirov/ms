@@ -5,12 +5,10 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 import com.googlecode.objectify.NotFoundException;
 import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 import org.maj.sm.dao.AccountServiceDAO;
-import org.maj.sm.model.Account;
-import org.maj.sm.model.BusinessUnit;
-import org.maj.sm.model.MSAAccount;
+import org.maj.sm.model.*;
 
 import com.googlecode.objectify.Key;
-import org.maj.sm.model.Product;
+import org.maj.sm.model.enums.MarketplaceStatus;
 import org.maj.sm.model.enums.ProductStatus;
 
 import java.util.Date;
@@ -70,6 +68,19 @@ public class AccountService {
 
     public Product moveProduct(Product product, Account newParentAccount){
         return accountServiceDAO.moveProduct(product,newParentAccount);
+    }
+
+    public Marketplace saveMarketplace(Marketplace marketplace){
+        return  accountServiceDAO.saveMarketplace(marketplace);
+    }
+
+    public Marketplace createMarketplace(MSAAccount account, String name){
+        Marketplace marketplace=new Marketplace();
+        marketplace.setName(name);
+        marketplace.setStatus(MarketplaceStatus.NEW);
+        marketplace.setParentAccount(account);
+        accountServiceDAO.saveAccount(account);
+        return accountServiceDAO.saveMarketplace(marketplace);
     }
 
 }

@@ -94,6 +94,16 @@ public class AccountServiceTest {
         Assert.assertFalse(msaAccount.getProducts().contains(cannedCatfood.getCode()));
         Assert.assertTrue(usaUnit.getProducts().contains(cannedCatfood.getCode()));
         Assert.assertEquals(usaUnit.getId(),cannedCatfood.getParentAccount());
+
+        Product cannedDogfood = accountService.createProduct(usaUnit, "CDF16z", "Canned Dog food 16oz", "Cool description");
+        Assert.assertEquals(2,usaUnit.getProducts().size());
+        accountService.moveProduct(cannedCatfood,nyUnit);
+        Assert.assertEquals(1,usaUnit.getProducts().size());
+        Assert.assertEquals(1,nyUnit.getProducts().size());
+
+        Marketplace googleAdWords = accountService.createMarketplace(msaAccount,"Google AdWords");
+
+
     }
     
 

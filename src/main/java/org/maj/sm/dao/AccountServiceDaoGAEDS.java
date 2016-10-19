@@ -3,10 +3,7 @@ package org.maj.sm.dao;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import com.googlecode.objectify.Key;
-import org.maj.sm.model.Account;
-import org.maj.sm.model.BusinessUnit;
-import org.maj.sm.model.MSAAccount;
-import org.maj.sm.model.Product;
+import org.maj.sm.model.*;
 import sun.jvm.hotspot.utilities.Assert;
 
 public class AccountServiceDaoGAEDS implements AccountServiceDAO{
@@ -70,5 +67,21 @@ public class AccountServiceDaoGAEDS implements AccountServiceDAO{
         product.setParentAccount(parent.getId());
         ofy().save().entities(parent,oldParent,product).now();
         return product;
+    }
+
+    @Override
+    public Marketplace createMarketplace(Marketplace marketplace, MSAAccount parentAccount) {
+        Assert.that(parentAccount.getId()!=null,"Parent MSA Account must have an ID field");
+        parentAccount=ofy().load().entity(parentAccount).now();
+        ofy().save().entity(marketplace).now();
+        parentAccount.addMarketplace(marketplace);
+        ofy().save().entities(parentAccount).now();
+        return marketplace;
+    }
+
+    @Override
+    public Marketplace saveMarketplace(Marketplace marketplace) {
+        Key markerplaceKey=ofy().save().entity(marketplace).now();
+        return marketplace;
     }
 }

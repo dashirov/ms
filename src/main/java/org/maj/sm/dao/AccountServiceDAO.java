@@ -1,9 +1,6 @@
 package org.maj.sm.dao;
 
-import org.maj.sm.model.Account;
-import org.maj.sm.model.BusinessUnit;
-import org.maj.sm.model.MSAAccount;
-import org.maj.sm.model.Product;
+import org.maj.sm.model.*;
 
 public interface AccountServiceDAO {
     /**
@@ -63,5 +60,16 @@ public interface AccountServiceDAO {
      * Updated product
      */
     Product moveProduct(Product product, Account parent);
+
+    /**
+     * Create a new marketplace under a specific MSA account
+     * @param marketplace
+     * @param parentAccount
+     * @return
+     */
+    Marketplace createMarketplace(Marketplace marketplace, MSAAccount parentAccount);
+
+    Marketplace saveMarketplace(Marketplace marketplace);
+
 
 }
