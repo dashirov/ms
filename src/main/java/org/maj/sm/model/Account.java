@@ -22,6 +22,29 @@ public class Account {
     @Container
     private SortedSet<Long> childAccounts = new TreeSet<>();
 
+    @Container
+    private SortedSet<String> products = new TreeSet<>();
+
+    public SortedSet<String> getProducts() {
+        return products;
+    }
+
+    public void setProducts(SortedSet<String> products) {
+        this.products = products;
+    }
+
+    public void addProduct(Product product){
+        products.add(product.getCode());
+    }
+    public void addProduct(String code){
+        products.add(code);
+    }
+    public void removeProduct(Product product){
+        products.remove(product.getCode());
+    }
+    public void removeProduct(String code){
+        products.remove(code);
+    }
     public Long getId() {
         return id;
     }

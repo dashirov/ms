@@ -3,6 +3,7 @@ package org.maj.sm.dao;
 import org.maj.sm.model.Account;
 import org.maj.sm.model.BusinessUnit;
 import org.maj.sm.model.MSAAccount;
+import org.maj.sm.model.Product;
 
 public interface AccountServiceDAO {
     /**
@@ -34,5 +35,33 @@ public interface AccountServiceDAO {
      * Updated Business Unit
      */
 	BusinessUnit moveBusinessUnit(BusinessUnit bu, Account parent);
+
+    /**
+     * Save a product under an account
+     *
+     * @param product
+     * Product code must be pre-populated in the POJO
+     * @return the saved product
+     */
+    Product saveProduct(Product product);
+
+    /**
+     * Create a new product under MSA Account or Business Unit
+     * @param product product POJO
+     * @param parentAccount product parent account
+     * @return the saved product
+     */
+    Product createProduct(Product product, Account parentAccount);
+
+    /**
+     * Move a product from one parent account to another
+     * @param product
+     * Product to move
+     * @param parent
+     * New Parent to attach to
+     * @return
+     * Updated product
+     */
+    Product moveProduct(Product product, Account parent);
 
 }

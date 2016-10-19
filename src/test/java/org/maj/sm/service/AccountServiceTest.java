@@ -85,10 +85,17 @@ public class AccountServiceTest {
     	//Test 1 - make sure it was saved
     	Assert.assertNotNull(msaAccount.getId());
 
+        Product cannedCatfood = accountService.createProduct(msaAccount,"CCF16z","Canned Catfood 16oz","Cool description");
+        Assert.assertEquals("CCF16Z",cannedCatfood.getCode());
+        Assert.assertTrue(msaAccount.getProducts().contains(cannedCatfood.getCode()));
 
-    	
+        cannedCatfood = accountService.moveProduct(cannedCatfood,usaUnit);
+        Assert.assertEquals(usaUnit.getId(),cannedCatfood.getParentAccount());
+        Assert.assertFalse(msaAccount.getProducts().contains(cannedCatfood.getCode()));
+        Assert.assertTrue(usaUnit.getProducts().contains(cannedCatfood.getCode()));
+        Assert.assertEquals(usaUnit.getId(),cannedCatfood.getParentAccount());
     }
     
-    
+
 
 }

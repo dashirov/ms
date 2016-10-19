@@ -10,6 +10,10 @@ import org.maj.sm.model.BusinessUnit;
 import org.maj.sm.model.MSAAccount;
 
 import com.googlecode.objectify.Key;
+import org.maj.sm.model.Product;
+import org.maj.sm.model.enums.ProductStatus;
+
+import java.util.Date;
 
 /**
  * This is a higher level service layer
@@ -46,5 +50,26 @@ public class AccountService {
         return accountServiceDAO.moveBusinessUnit(businessUnit,newParentAccount);
     }
 
+
+    public Product saveProduct(Product product){
+        return  accountServiceDAO.saveProduct(product);
+    }
+
+    public Product createProduct(Account parentAccount, String productCode, String productName, String productDescription) {
+        Product product = new Product();
+        product.setCode(productCode);
+        product.setName(productName);
+        product.setDescription(productDescription);
+        product.setStatus(new Date(), ProductStatus.NEW);
+
+        parentAccount.addProduct(product.getCode());
+        product.setParentAccount(parentAccount.getId());
+        accountServiceDAO.saveAccount(parentAccount);
+        return  accountServiceDAO.saveProduct(product);
+    }
+
+    public Product moveProduct(Product product, Account newParentAccount){
+        return accountServiceDAO.moveProduct(product,newParentAccount);
+    }
 
 }

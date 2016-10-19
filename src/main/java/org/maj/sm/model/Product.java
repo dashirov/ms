@@ -15,6 +15,16 @@ public class Product {
 	private String name;
 	private String description;
 
+    public Long getParentAccount() {
+        return parentAccount;
+    }
+
+    public void setParentAccount(Long parentAccount) {
+        this.parentAccount = parentAccount;
+    }
+
+    private Long parentAccount;
+
     @Container
 	private ChangeLog<ProductStatus> statusChangeLog = new ChangeLog<ProductStatus>();
 
